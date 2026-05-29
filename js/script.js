@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ==========================================================================
    UBICACION - L&L CONTRACTORs
    ========================================================================== */
-  document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
     const isEnglish = document.documentElement.lang === "en";
 
@@ -247,10 +247,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const hour = chicagoTime.getHours();
         const day = chicagoTime.getDay();
 
+        // 🟢 NUEVO HORARIO
         const isOpen =
-            (day === 0 || day === 6)
-                ? (hour >= 8 && hour < 20)
-                : (hour >= 7 && hour < 22);
+            (day >= 1 && day <= 5)
+                ? (hour >= 8 && hour < 18)     
+                : (day === 6)
+                    ? (hour >= 7 && hour < 12) 
+                    : false;                 
 
         container.classList.remove("status-open", "status-closed");
 
@@ -258,13 +261,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
             container.classList.add("status-open");
 
-            const openHour =
-                (day === 0 || day === 6) ? 20 : 22;
+            let closeHour;
 
-            const openMinutes = openHour * 60;
+            if (day >= 1 && day <= 5) {
+                closeHour = 18;
+            } else if (day === 6) {
+                closeHour = 12;
+            }
+
+            const closeMinutes = closeHour * 60;
             const currentMinutes = hour * 60 + chicagoTime.getMinutes();
 
-            let diff = openMinutes - currentMinutes;
+            let diff = closeMinutes - currentMinutes;
 
             const h = Math.floor(diff / 60);
             const m = diff % 60;
@@ -290,7 +298,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateStatus();
     setInterval(updateStatus, 60000);
 });
-
 
 
 /* ==========================================================================
